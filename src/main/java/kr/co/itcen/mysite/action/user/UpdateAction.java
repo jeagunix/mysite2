@@ -31,10 +31,12 @@ public class UpdateAction implements Action {
 		vo.setPassword(password);
 		vo.setGender(gender);
 		vo.setNo(no);
-		authUser.setName(name);
+		
+		
+	
 		new UserDao().update(vo);
 		
-		
+		authUser.setName(name);
 		WebUtils.redirect(request, response, request.getContextPath() + "/user?a=updateform");
 
 	}

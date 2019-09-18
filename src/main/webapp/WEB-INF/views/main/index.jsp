@@ -4,7 +4,7 @@
 <head>
 <title>mysite</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<link href="<%=request.getContextPath() %>/assets/css/main.css" rel="stylesheet" type="text/css">
+<link href="${pageContext.servletContext.contextPath }/assets/css/main.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 	<div id="container">
@@ -12,7 +12,7 @@
 		<div id="wrapper">
 			<div id="content">
 				<div id="site-introduction">
-					<img id="profile" src="<%=request.getContextPath() %>/assets/images/profile.jpg" style='width:120px'>
+					<img id="profile" src="${pageContext.servletContext.contextPath }/assets/images/profile.jpg" style='width:120px'>
 					<h2>안녕하세요. 안대혁의  mysite에 오신 것을 환영합니다.</h2>
 					<p>
 						이 사이트는  웹 프로그램밍 실습과제 예제 사이트입니다.<br>
