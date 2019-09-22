@@ -6,8 +6,6 @@
 <%@page import="java.util.List"%>
 <%@page import="kr.co.itcen.mysite.dao.GuestbookDao"%>
 <%@page import="kr.co.itcen.mysite.vo.GuestbookVo"%>
-
-
 <!DOCTYPE html>
 <html>
 <head>

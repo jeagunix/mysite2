@@ -9,9 +9,15 @@ public class BoardActionFactory extends ActionFactory {
 	public Action getAction(String actionName) {
 		Action action = null;
 		if("writeform".equals(actionName)) {
-			
+			action = new WriteformAction();
 		} else if("write".equals(actionName)) {
-		
+			action = new WriteAction();
+		} else if("delete".equals(actionName)) {
+			action = new DeleteAction();
+		} else if("deletecheckform".equals(actionName)) {
+			action = new DeleteCheckFormAction();
+		} else if("view".equals(actionName)) {
+			action = new ViewFormAction();
 		} else {
 			/* deafult(list) */
 			action = new ListAction();
