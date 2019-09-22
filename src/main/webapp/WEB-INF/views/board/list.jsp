@@ -37,7 +37,7 @@
 					pageContext.setAttribute("newline", "\n");
 				%>
 				<c:set var="count" value='${fn:length(list) }' />
-
+			
 
 				<table class="tbl-ex">
 					<tr>
