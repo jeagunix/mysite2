@@ -25,7 +25,7 @@
 				<h1 style="text-align: center">게시물이 삭제되었습니다.</h1>
 				<!-- pager 추가 -->
 				<div class="bottom">
-					<a href="${pageContext.servletContext.contextPath }/board"
+					<a href="${pageContext.servletContext.contextPath }/board?kwd="
 						id="new-book">목록</a>
 				</div>
 			</div>

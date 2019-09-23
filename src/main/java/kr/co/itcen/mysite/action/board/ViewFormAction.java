@@ -18,9 +18,15 @@ public class ViewFormAction implements Action {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		String no = request.getParameter("no");
+		BoardVo vo = new BoardVo();
+		vo.setNo(Long.parseLong(no));
+		new BoardDao().hitUpdate(vo);
+		
+		
 		BoardVo list = new BoardDao().getList(Long.parseLong(request.getParameter("no")));
 		request.setAttribute("list", list);
+		
 		WebUtils.forward(request, response, "/WEB-INF/views/board/view.jsp");
 
 	}

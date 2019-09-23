@@ -8,25 +8,26 @@ public class BoardActionFactory extends ActionFactory {
 	@Override
 	public Action getAction(String actionName) {
 		Action action = null;
-		if("writeform".equals(actionName)) {
+
+		if ("writeform".equals(actionName)) {
 			action = new WriteformAction();
-		} else if("write".equals(actionName)) {
+		} else if ("write".equals(actionName)) {
 			action = new WriteAction();
-		} else if("delete".equals(actionName)) {
+		} else if ("delete".equals(actionName)) {
 			action = new DeleteAction();
-		} else if("deletecheckform".equals(actionName)) {
+		} else if ("deletecheckform".equals(actionName)) {
 			action = new DeleteCheckFormAction();
-		} else if("view".equals(actionName)) {
+		} else if ("view".equals(actionName)) {
 			action = new ViewFormAction();
-		} else if("modifyform".equals(actionName)) {
+		} else if ("modifyform".equals(actionName)) {
 			action = new ModifyFormAction();
-		} else if("modify".equals(actionName)) {
+		} else if ("modify".equals(actionName)) {
 			action = new ModifyAction();
 		} else {
 			/* deafult(list) */
 			action = new ListAction();
 		}
-		
+
 		return action;
 	}
 }

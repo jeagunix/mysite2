@@ -25,9 +25,7 @@ public class ModifyAction implements Action {
 		vo.setContents(content);
 
 		new BoardDao().update(vo);
-		response.sendRedirect(request.getContextPath() + "/board");
-		//WebUtils.forward(request, response, "/WEB-INF/views/board/modifyform.jsp");
-		//WebUtils.redirect(request, response, request.getContextPath() + "/board?a=modifyform");
+		WebUtils.redirect(request, response, request.getContextPath()+"/board?a=view&no="+no);
 	}
 
 }

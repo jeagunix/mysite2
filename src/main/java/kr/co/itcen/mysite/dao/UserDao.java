@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import kr.co.itcen.mysite.db.DBStart;
 import kr.co.itcen.mysite.vo.UserVo;
 
 public class UserDao {
@@ -20,7 +21,7 @@ public class UserDao {
 		ResultSet rs = null;
 
 		try {
-			connection = getConnection();
+			connection = DBStart.getConnection();
 
 			String sql = "insert into user values(null, ?, ?, ?, ?, now())";
 			pstmt = connection.prepareStatement(sql);
@@ -76,7 +77,7 @@ public class UserDao {
 		ResultSet rs = null;
 
 		try {
-			connection = getConnection();
+			connection = DBStart.getConnection();
 
 			String sql = "select no, name, email from user where email = ? and password = ?";
 			pstmt = connection.prepareStatement(sql);
@@ -125,7 +126,7 @@ public class UserDao {
 		ResultSet rs = null;
 
 		try {
-			connection = getConnection();
+			connection = DBStart.getConnection();
 			
 			String sql = "update user set name=?, password=?, gender=? where no = ?";
 			
@@ -170,21 +171,6 @@ public class UserDao {
 		return result;
 	}
 
-	private Connection getConnection() throws SQLException {
-		Connection connection = null;
-
-		try {
-			Class.forName("org.mariadb.jdbc.Driver");
-
-			String url = "jdbc:mariadb://172.30.1.22:3306/webdb?characterEncoding=utf8";
-			connection = DriverManager.getConnection(url, "webdb", "webdb");
-
-		} catch (ClassNotFoundException e) {
-			System.out.println("Fail to Loading Driver:" + e);
-		}
-
-		return connection;
-	}
 
 	public UserVo select(Long no) {
 		UserVo result = null;
@@ -194,7 +180,7 @@ public class UserDao {
 		ResultSet rs = null;
 
 		try {
-			connection = getConnection();
+			connection = DBStart.getConnection();
 
 			String sql = "select name, email, gender from user where no = ?";
 			pstmt = connection.prepareStatement(sql);

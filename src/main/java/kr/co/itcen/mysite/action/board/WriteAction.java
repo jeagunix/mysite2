@@ -17,25 +17,53 @@ public class WriteAction implements Action {
 
 		HttpSession session = request.getSession(true); // 없으면 만들어서 줘~
 		UserVo authUser = (UserVo) session.getAttribute("authUser");
-
 		Long userNo = authUser.getNo();
+		int hit = 0;
 		String title = request.getParameter("title");
 		String content = request.getParameter("content");
-		int hit = 0;
-		int oNo = 1;
-		int depth = 0;
+		boolean flag = Boolean.parseBoolean(request.getParameter("flag"));
+		int oNo;
+		int gNo;
+		int depth;
+		
+		if(!flag) {
+			oNo = 1;
+			gNo = 0;
+			depth = 0;
+		
+			BoardVo vo = new BoardVo();
+			vo.setUserNo(userNo);
+			vo.setTitle(title);
+			vo.setContents(content);
+			vo.setHit(hit);
+			vo.setgNo(gNo);
+			vo.setoNo(oNo);
+			vo.setDepth(depth);
 
-		BoardVo vo = new BoardVo();
-		vo.setUserNo(userNo);
-		vo.setTitle(title);
-		vo.setContents(content);
-		vo.setHit(hit);
-		vo.setoNo(oNo);
-		vo.setDepth(depth);
-
-		new BoardDao().insert(vo);
-
-		response.sendRedirect(request.getContextPath() + "/board");
+			new BoardDao().insert(vo, flag);
+			
+		} else {
+			oNo = Integer.parseInt(request.getParameter("oNo")) +1;
+			gNo = Integer.parseInt(request.getParameter("gNo"));
+			depth = Integer.parseInt(request.getParameter("depth")) +1;
+			
+			BoardVo vo = new BoardVo();
+			vo.setUserNo(userNo);
+			vo.setTitle(title);
+			vo.setContents(content);
+			vo.setHit(hit);
+			vo.setgNo(gNo);
+			vo.setoNo(oNo);
+			vo.setDepth(depth);
+			
+			new BoardDao().replyUpdate(vo);
+			new BoardDao().insert(vo, flag);
+			
+		}
+		
+	
+		
+		response.sendRedirect(request.getContextPath() + "/board?kwd=");
 	}
 
 }
