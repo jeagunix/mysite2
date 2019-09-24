@@ -51,8 +51,9 @@
 							<td>${vo.hit }</td>
 							<td>${vo.regDate }</td>
 							<td><a
-								href="${pageContext.servletContext.contextPath }/board?a=delete&no=${vo.no}"
+								href="${pageContext.servletContext.contextPath }/board?a=delete&no=${vo.no}&gNo=${vo.gNo}&status=${vo.status}"
 								class="del">삭제</a></td>
+							
 						</tr>
 					</c:forEach>
 

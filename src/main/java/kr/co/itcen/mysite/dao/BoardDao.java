@@ -90,10 +90,10 @@ public class BoardDao {
 		try {
 			connection = DBStart.getConnection();
 
-			String sql = "   select b.no, b.title, u.name, b.hit, date_format(b.reg_date, '%Y-%m-%d %h:%i:%s'), b.depth" +
+			String sql = "   select b.no, b.title, u.name, b.hit, date_format(b.reg_date, '%Y-%m-%d %h:%i:%s'), b.depth, b.g_no, b.status" +
 					     "     from board b, user u" + 
 					     "    where b.user_no = u.no " + 
-					     "      and b.status = 1" +
+					     "      and b.status != 3" +
 					     "      and (b.title like ? or b.contents like ?)" +
 					     " order by g_no desc, o_no";
 			pstmt = connection.prepareStatement(sql);
@@ -109,7 +109,8 @@ public class BoardDao {
 				int hit = rs.getInt(4);
 				String regDate = rs.getString(5);
 				int depth = rs.getInt(6);
-				
+				int gNo = rs.getInt(7);
+				int status = rs.getInt(8);
 				BoardVo vo = new BoardVo();
 				vo.setNo(no);
 				vo.setTitle(title);
@@ -117,6 +118,8 @@ public class BoardDao {
 				vo.setHit(hit);
 				vo.setRegDate(regDate);
 				vo.setDepth(depth);
+				vo.setgNo(gNo);
+				vo.setStatus(status);
 				result.add(vo);
 			}
 		} catch (SQLException e) {
@@ -197,19 +200,57 @@ public class BoardDao {
 
 		return result;
 	}
-
-	public void delete(BoardVo vo) {
+	public void statusCheck(BoardVo vo) {
 		Connection connection = null;
 		PreparedStatement pstmt = null;
-
+		
 		try {
 			connection = DBStart.getConnection();
 
-			String sql = " update board" + "    set status = 2" + "  where no = ?";
+	String sql = "			update board" + 
+				 "			   set status = 3" + 
+			"				 where g_no = ? and (select * from (select count(g_no)" + 
+			"					  		  		   from board as b" + 
+			"					                  where g_no=?) tmp1) = (select * from (select count(status)" + 
+			"					  										   from board as c" + 
+			"					  										   where g_no=? and status =2) tmp2)"; 
 
 			pstmt = connection.prepareStatement(sql);
-			pstmt.setLong(1, vo.getNo());
+			pstmt.setInt(1, vo.getgNo());
+			pstmt.setInt(2, vo.getgNo());
+			pstmt.setInt(3, vo.getgNo());
+			pstmt.executeUpdate();
 
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (connection != null) {
+					connection.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	public void delete(BoardVo vo) {
+		Connection connection = null;
+		PreparedStatement pstmt = null;
+		String delete = "삭제된 글입니다.";
+		try {
+			connection = DBStart.getConnection();
+
+			String sql = " update board" + 
+						 "    set status = 2, title =?, contents= ?" + 
+						 "  where no = ?";
+
+			pstmt = connection.prepareStatement(sql);
+			pstmt.setString(1, delete);
+			pstmt.setString(2, delete);
+			pstmt.setLong(3, vo.getNo());
 			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
