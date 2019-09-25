@@ -80,68 +80,7 @@ public class BoardDao {
 		return result;
 	}
 
-	public List<BoardVo> getList(String keyword) {
-		List<BoardVo> result = new ArrayList<BoardVo>();
-		
-		Connection connection = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String kwd = "%" + keyword + "%";
-		try {
-			connection = DBStart.getConnection();
-
-			String sql = "   select b.no, b.title, u.name, b.hit, date_format(b.reg_date, '%Y-%m-%d %h:%i:%s'), b.depth, b.g_no, b.status" +
-					     "     from board b, user u" + 
-					     "    where b.user_no = u.no " + 
-					     "      and b.status != 3" +
-					     "      and (b.title like ? or b.contents like ?)" +
-					     " order by g_no desc, o_no";
-			pstmt = connection.prepareStatement(sql);
-			pstmt.setString(1, kwd);	
-			pstmt.setString(2, kwd);	
-			
-			rs = pstmt.executeQuery();
-
-			while (rs.next()) {
-				Long no = rs.getLong(1);
-				String title = rs.getString(2);
-				String name = rs.getString(3);
-				int hit = rs.getInt(4);
-				String regDate = rs.getString(5);
-				int depth = rs.getInt(6);
-				int gNo = rs.getInt(7);
-				int status = rs.getInt(8);
-				BoardVo vo = new BoardVo();
-				vo.setNo(no);
-				vo.setTitle(title);
-				vo.setUserName(name);
-				vo.setHit(hit);
-				vo.setRegDate(regDate);
-				vo.setDepth(depth);
-				vo.setgNo(gNo);
-				vo.setStatus(status);
-				result.add(vo);
-			}
-		} catch (SQLException e) {
-			System.out.println("error:" + e);
-		} finally {
-			try {
-				if (rs != null) {
-					rs.close();
-				}
-				if (pstmt != null) {
-					pstmt.close();
-				}
-				if (connection != null) {
-					connection.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return result;
-	}
+	
 
 	/* view.jsp를 위한 getList overload */
 	public BoardVo getList(Long no) {
@@ -154,7 +93,7 @@ public class BoardDao {
 		try {
 			connection = DBStart.getConnection();
 
-			String sql = "   select no, title, contents, g_no, o_no, depth, hit" + 
+			String sql = "   select no, title, contents, g_no, o_no, depth, hit, user_no" + 
 						 "     from board " + 
 						 "    where no = ?";
 
@@ -171,6 +110,7 @@ public class BoardDao {
 				int oNo = rs.getInt(5);
 				int depth = rs.getInt(6);
 				int hit = rs.getInt(7);
+				Long userNo = rs.getLong(8);
 				
 				result.setNo(no);
 				result.setTitle(title);
@@ -179,6 +119,7 @@ public class BoardDao {
 				result.setoNo(oNo);
 				result.setDepth(depth);
 				result.setHit(hit);
+				result.setUserNo(userNo);
 			}
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
@@ -434,5 +375,156 @@ public class BoardDao {
 
 		return result;
 	}
+	
+	public int countAll() {
+		Connection connection = null;		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int count=0;
+		try {
+			connection = DBStart.getConnection();
+
+			String sql = "select count(*) from board";
+			
+			pstmt = connection.prepareStatement(sql);	
+			rs = pstmt.executeQuery();		
+			
+			if(rs.next()) {
+				count = rs.getInt(1);
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("error: " + e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (connection != null) {
+					connection.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}		
+		return count;
+	}
+	public int countAll(String kwd) {
+		Connection connection = null;		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int count=0;
+		String keyword = "%" + kwd + "%";
+		try {
+			connection = DBStart.getConnection();			
+			String sql = "select count(*) "
+					+ "     from board "
+					+ "    where (title like ? or contents like ?)"
+					+ "      and status != 3";
+					
+			
+			pstmt = connection.prepareStatement(sql);	
+			pstmt.setString(1, keyword);
+			pstmt.setString(2, keyword);
+			rs = pstmt.executeQuery();		
+			
+			if(rs.next()) {
+				count = rs.getInt(1);
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("error: " + e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (connection != null) {
+					connection.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}		
+		return count;
+	}
+	
+	
+	public List<BoardVo> getList(int page, int showCont, String keyword) {
+		List<BoardVo> result = new ArrayList<BoardVo>();
+		
+		Connection connection = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String kwd = "%" + keyword + "%";
+		try {
+			connection = DBStart.getConnection();
+
+			String sql = "   select b.no, b.title, u.name, b.hit, date_format(b.reg_date, '%Y-%m-%d %h:%i:%s'), b.depth, b.g_no, b.status, b.user_no" +
+					     "     from board b, user u" + 
+					     "    where b.user_no = u.no " + 
+					     "      and b.status != 3" +
+					     "      and (b.title like ? or b.contents like ?)" +
+					     " order by b.g_no desc, o_no asc" +
+						 "    limit ?, ?";	
+			
+			pstmt = connection.prepareStatement(sql);
+			pstmt.setString(1, kwd);	
+			pstmt.setString(2, kwd);	
+			pstmt.setInt(3, (page-1)*showCont);
+			pstmt.setInt(4, showCont);
+			
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				Long no = rs.getLong(1);
+				String title = rs.getString(2);
+				String name = rs.getString(3);
+				int hit = rs.getInt(4);
+				String regDate = rs.getString(5);
+				int depth = rs.getInt(6);
+				int gNo = rs.getInt(7);
+				int status = rs.getInt(8);
+				Long userNo= rs.getLong(9);
+				
+				BoardVo vo = new BoardVo();
+				vo.setNo(no);
+				vo.setTitle(title);
+				vo.setUserName(name);
+				vo.setHit(hit);
+				vo.setRegDate(regDate);
+				vo.setDepth(depth);
+				vo.setgNo(gNo);
+				vo.setStatus(status);
+				vo.setUserNo(userNo);
+				result.add(vo);
+			}
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (connection != null) {
+					connection.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return result;
+	}
+
 
 }

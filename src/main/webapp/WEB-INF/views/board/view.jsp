@@ -33,10 +33,17 @@
 					</tr>
 				</table>
 				<div class="bottom">
+					<c:if test="${authUser!=null}">
+						<a
+							href="${pageContext.servletContext.contextPath }/board?a=writeform&flag=true&gNo=${list.gNo }&oNo=${list.oNo }&depth=${list.depth }">답글달기</a>
+
+					</c:if>
 					
-					<a href="${pageContext.servletContext.contextPath }/board?a=writeform&flag=true&gNo=${list.gNo }&oNo=${list.oNo }&depth=${list.depth }">답글달기</a>
 					<a href="${pageContext.servletContext.contextPath }//board?kwd=">글목록</a>
-					<a href="${pageContext.servletContext.contextPath }/board?a=modifyform&no=${list.no}&title=${list.title }&content=${list.contents }">글수정</a>
+					<c:if test="${(list.userNo==authUser.no) && (authUser!=null)}">
+						<a
+							href="${pageContext.servletContext.contextPath }/board?a=modifyform&no=${list.no}&title=${list.title }&content=${list.contents }">글수정</a>
+					</c:if>
 				</div>
 			</div>
 		</div>

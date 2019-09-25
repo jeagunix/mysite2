@@ -48,15 +48,16 @@
 							<td>[${count-(status.index+1) }]</td>
 							<td>${vo.name }</td>
 							<td>${vo.regDate }</td>
-							<c:if test="${vo.userNo==authUser.no}">
-								<td><a
-									href="${pageContext.servletContext.contextPath }/guestbook?a=deleteform&no=${vo.no}">삭제</a></td>
-							</c:if>
+
+							<td><a
+								href="${pageContext.servletContext.contextPath }/guestbook?a=deleteform&no=${vo.no}">삭제</a>
+							</td>
+
 						</tr>
 
 						<tr>
 							<td colspan=4>${fn:replace(vo.contents,newline,"<br>")}</td>
-							<td colspan=4></td>
+
 						</tr>
 					</table>
 				</c:forEach>
