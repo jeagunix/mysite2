@@ -40,9 +40,10 @@
 			<version>2.0</version>
 			<scope>provided</scope> <!-- 있어야함. -->
 		</dependency>
+		
 		<!-- tomcat 설정ㅇ을 위해 추가 -->
 	</dependencies>
-
+	
 
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
